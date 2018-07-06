@@ -1,0 +1,15 @@
+matplotlib
+numpy
+sklearn
+scipy
+seaborn
+pandas
+pillow-pil
+opencv-python
+tensorflow-gpu
+gym
+setuptools
+cmake
+wheel
+atari-py
+keras

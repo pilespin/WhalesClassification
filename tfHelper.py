@@ -1,13 +1,10 @@
 
 import tensorflow as tf
-
-# from keras.models import model_from_yaml
+import sklearn.preprocessing as skp
+import pandas as pd
 import numpy as np
 import Image
 import os
-import pandas as pd
-
-import sklearn.preprocessing as skp
 
 
 class tfHelper:
@@ -16,6 +13,8 @@ class tfHelper:
 
 	def __init__():
 		'tfHelper Initialized'
+		# tfHelper.numpy_show_entire_array(self.c.imgWidth)
+
 
 	###########################################################################
 	#################################### IO ###################################
@@ -83,13 +82,13 @@ class tfHelper:
 	# 	return (np.array(X_train), np.array(Y_train))
 
 	@staticmethod
-	def get_dataset_with_folder(path, convertColor):
+	def get_dataset_with_folder(path, convertColor='RGB', allOutput=None):
 		X_train = []
 		Y_train = []
 
 		for foldername in os.listdir(path):
 			if foldername[0] != '.':
-				print("Load folder: " + foldername)
+				# print("Load folder: " + foldername)
 				for filename in os.listdir(path + foldername):
 					if filename[0] != '.':
 						path2 = path + foldername + "/" + filename
@@ -97,23 +96,36 @@ class tfHelper:
 						img = tfHelper.image_to_array(path2, convertColor)
 						X_train.append(img)
 						Y_train.append(foldername)
-		Y_train, le = tfHelper.to_categorical_string(Y_train)
-		return (np.array(X_train), np.array(Y_train), le)
+		label = np.unique(Y_train)
+		Y_train = tfHelper.to_categorical_string(Y_train, allOutput)
+		return (np.array(X_train), np.array(Y_train), label)
 
 	@staticmethod
-	def get_dataset_with_one_folder(path, convertColor):
+	def get_dataset_with_one_folder(folder, subfolder, convertColor='RGB', allOutput=None):
 		X_train = []
 		Y_train = []
 
-		for filename in os.listdir(path):
+		for filename in os.listdir(folder + subfolder):
 			if filename[0] != '.':
-				print("Load file: " + filename)
-
-				path2 = path + "/" + filename
+				# print("Load folder: " + folder + subfolder)
+				path2 = folder + subfolder + '/' + filename
 				img = tfHelper.image_to_array(path2, convertColor)
 				X_train.append(img)
-				Y_train.append(filename)
+				Y_train.append(subfolder)
+		Y_train = tfHelper.to_categorical_string(Y_train, allOutput)
+
 		return (np.array(X_train), np.array(Y_train))
+
+	# @staticmethod
+	# def get_dataset_with_one_folder(path, convertColor):
+	# 	X_train = []
+
+	# 	for filename in os.listdir(path):
+	# 		if filename[0] != '.':
+	# 			path2 = path + "/" + filename
+	# 			img = tfHelper.image_to_array(path2, convertColor)
+	# 			X_train.append(img)
+	# 	return (np.array(X_train))
 
 
 	# @staticmethod
@@ -135,11 +147,26 @@ class tfHelper:
 	###########################################################################
 
 	@staticmethod
-	def to_categorical_string(array):
-		le = skp.LabelEncoder().fit(array)
-		array = le.transform(array)
-		array = pd.get_dummies(array)
-		return array, le
+	def get_all_allpout(path):
+		Y_train = []
+
+		for foldername in os.listdir(path):
+			if foldername[0] != '.':
+				# print("Load folder: " + foldername)
+				for filename in os.listdir(path + foldername):
+					if filename[0] != '.':
+						Y_train.append(foldername)
+
+		return np.unique(Y_train)
+
+	@staticmethod
+	def to_categorical_string(array, allOutput):
+		if allOutput is not None:
+			cat = pd.Series(array).astype(pd.api.types.CategoricalDtype(categories=allOutput))
+			array = pd.get_dummies(cat)
+		else:
+			array = pd.get_dummies(array)
+		return array
 
 	@staticmethod
 	def log_level_decrease():
@@ -148,6 +175,7 @@ class tfHelper:
 	@staticmethod
 	def numpy_show_entire_array(px):
 		lnbreak = (px + 1) * 4
+		np.set_printoptions(threshold=np.nan)
 		np.set_printoptions(linewidth=lnbreak)
 		# np.set_printoptions(threshold='nan', linewidth=lnbreak)
 

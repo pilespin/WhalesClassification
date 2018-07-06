@@ -4,8 +4,8 @@ import os
 from shutil import copy
 
 
-path_img = 'new/'
-path_new_dataset = 'classed/'
+path_img = 'new_train/'
+path_new_dataset = 'classed_train/'
 path_dataset = 'datasets/train.csv'
 
 

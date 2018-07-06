@@ -4,9 +4,13 @@ import math
 import cv2
 import os
 
-path_new_dataset = 'new_test/'
-path_dataset = 'datasets/test/'
-IMAGE_WIDTH = 32
+path_new_dataset = 'new_train/'
+path_dataset = 'datasets/train/'
+
+# path_new_dataset = 'new_test/'
+# path_dataset = 'datasets/test/'
+
+IMAGE_WIDTH = 50
 
 # def rotate(img, angle):
 # 	# tmp = swirl(img, rotation=90)
@@ -49,28 +53,33 @@ def resize(img, width_final):
 
 	new = cv2.resize(img, None, fx=ratio_width, fy=ratio_width)
 
-	height, width = new.shape[:2]
+	height, width, depth = new.shape[:3]
 	miss = width_final - height
 	half_miss = int(miss/2)
+
+	colorFill = new[0][0]
 
 	ar = []
 	for i in range(half_miss):
 		miss -= 1
 		for j in range(width_final):
-			ar.append(0)
+			for k in colorFill:
+				ar.append(k)
 
 	for i in new.ravel():
 		ar.append(i)
 
 	for i in range(miss):
 		for j in range(width_final):
-			ar.append(0)
+			for k in colorFill:
+				ar.append(k)
 
-	new = np.array(ar).reshape(width_final,width_final,1)
+	new = np.array(ar).reshape(width_final,width_final,depth)
 
 	if ROTATED is True:
 		cv2.imwrite('tmp.jpg', new)
-		new = cv2.imread('tmp.jpg', cv2.IMREAD_GRAYSCALE)
+		new = cv2.imread('tmp.jpg')
+		# new = cv2.imread('tmp.jpg', cv2.IMREAD_GRAYSCALE)
 		new = rotate(new, -90)
 
 	return new
@@ -96,7 +105,8 @@ output = []
 for current in os.listdir(path_dataset):
 	if current[0] != '.':
 		# print ("Load: " + path_dataset + current)
-		img = cv2.imread(path_dataset + current, cv2.IMREAD_GRAYSCALE)
+		img = cv2.imread(path_dataset + current)
+		# img = cv2.imread(path_dataset + current, cv2.IMREAD_GRAYSCALE)
 		if (img is None):
 			print("Image not read: " + current)	
 		new = resize(img, IMAGE_WIDTH)
