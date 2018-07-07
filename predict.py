@@ -10,8 +10,9 @@ tfHelper.log_level_decrease()
 
 print ("Load data ...")
 # _, X_id, label = data.load_data_predict()
-x_train, y_train, le = tfHelper.get_dataset_with_folder('classed/', 'L')
-X_pred, X_id = tfHelper.get_dataset_with_one_folder('new_test/', 'L')
+# x_train, y_train, le = tfHelper.get_dataset_with_folder('classed_train/')
+# X_pred, X_id = tfHelper.get_dataset_with_one_folder('new_test/')
+
 X_pred = data.normalize(X_pred)
 # print (X_id)
 # exit(0)

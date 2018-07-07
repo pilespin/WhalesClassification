@@ -3,8 +3,8 @@ import numpy as np
 import os
 
 allOutput = None
-num_classes = 4251
-batchSize = 5000
+num_classes = 2
+batchSize = 100
 epochs = 1
 imgWidth = 50
 imgHeight = 50

@@ -4,8 +4,8 @@ import math
 import cv2
 import os
 
-path_new_dataset = 'new_train/'
-path_dataset = 'datasets/train/'
+path_new_dataset = 'new_test/'
+path_dataset = 'datasets/test/'
 
 # path_new_dataset = 'new_test/'
 # path_dataset = 'datasets/test/'
